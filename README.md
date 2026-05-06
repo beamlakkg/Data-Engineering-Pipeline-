@@ -64,15 +64,45 @@ cd project-folder
 
 ### Step 2: Install dependencies
 
+Create and activate a virtual environment first:
+
+```
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Then install the packages inside that environment:
+
 ```
 pip install -r requirements.txt
+```
+
+### Step 2b: Configure BigQuery credentials
+
+Choose one of these options before running the script:
+
+1. Put your service account file at the project root as `key.json`.
+2. Or set the environment variable `GOOGLE_APPLICATION_CREDENTIALS` to the full path of your key file.
+
+Example on Linux/macOS:
+
+```
+export GOOGLE_APPLICATION_CREDENTIALS="/full/path/to/key.json"
+```
+
+Example on Windows PowerShell:
+
+```
+$env:GOOGLE_APPLICATION_CREDENTIALS="C:\full\path\to\key.json"
 ```
 
 ### Step 3: Run the ETL pipeline
 
 ```
-python src/src_main.py
+.venv/bin/python src/src_main.py
 ```
+
+If the credentials are configured correctly, the script will read the CSV, build the `Revenue` column, save the cleaned file, and then load the data into BigQuery without raising an authentication error.
 
 ---
 

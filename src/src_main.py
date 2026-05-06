@@ -1,6 +1,24 @@
 import pandas as pd
 from google.cloud import bigquery
 import os
+from pathlib import Path
+
+
+def configure_google_credentials():
+    if os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"):
+        return
+
+    project_root = Path(__file__).resolve().parents[1]
+    key_path = project_root / "key.json"
+
+    if key_path.exists():
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(key_path)
+        return
+
+    raise FileNotFoundError(
+        "Set GOOGLE_APPLICATION_CREDENTIALS or place key.json in the project root."
+    )
+
 
 def main():
     try:
@@ -16,7 +34,8 @@ def main():
         print("✅ Step 4: Loading to BigQuery...")
 
         # 🔑 Authenticate
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "D:/Selected Topics/branden254-ETL-Data-Pipeline-fa6d44e/key.json"
+        configure_google_credentials()
+        print(f"✅ Using Google credentials from: {os.environ['GOOGLE_APPLICATION_CREDENTIALS']}")
 
         client = bigquery.Client()
 
